@@ -48,7 +48,31 @@ namespace KreNol
 
         private void New_Game(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+
+            foreach (UIElement el in MainRoot.Children)
+            {
+                if (el is Button)
+                {
+                    if (((Button)el).Name != "bEnd")
+                    {
+                        ((Button)el).Content = "";
+                    }
+
+                }
+            }
+
+            if (thisGame == 0)
+            {
+                thisGame = 1;
+
+                bot_Going("X");
+                isGoing = true;
+            }
+            else
+            {
+                thisGame = 0;
+                isGoing = true;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -59,25 +83,58 @@ namespace KreNol
                 if (thisGame == 0)
                 {
                     ((Button)e.OriginalSource).Content = "X";
-                    if (Is_Win("X") == false)
+                    isGoing = !isGoing;
+
+                    if (Is_Win("X") == 0)
                     {
                         MessageBox.Show("Крестики победили");
                     }
-                    else
+
+                    else if (Is_Win("X") == 1)
                     {
-                        Button botButt;
+                        //В этом цикле бот ставит свой значёк на повторяющуюся клетку
+                        bot_Going("0");
+                        if (Is_Win("0") == 0)
+                        {
+                            MessageBox.Show("Нолики победили");
+                        }
+
+                        else if (Is_Win("0") == 1)
+                        {
+                            isGoing = true;
+                        }
                     }
                 }
                 else if (thisGame == 1)
                 {
                     ((Button)e.OriginalSource).Content = "0";
-                }
+                    isGoing = !isGoing;
 
-                isGoing = !isGoing;
-            } 
+                    if (Is_Win("0") == 0)
+                    {
+                        MessageBox.Show("Нолики победили");
+                    }
+
+                    else if (Is_Win("0") == 1)
+                    {
+                        //В этом цикле бот ставит свой значёк на случайную пустую клетку
+                        bot_Going("X");
+                        if (Is_Win("X") == 0)
+                        {
+                            MessageBox.Show("Крестики победили");
+                        }
+
+                        else if (Is_Win("X") == 1)
+                        {
+                            isGoing = true;
+                        }
+                    }
+                }
+            }
+
         }
 
-        public bool Is_Win(string symbol)
+        public int Is_Win(string symbol)
         {
             List<string> desk = new List<string> { };
 
@@ -87,6 +144,7 @@ namespace KreNol
                 {
                     if (((Button)el).Name != "bEnd")
                     {
+                        Debug.WriteLine((string)((Button)el).Content);
                         desk.Add((string)((Button)el).Content);
                     }
 
@@ -95,41 +153,68 @@ namespace KreNol
 
             if (symbol == "X")
             {
-                if ((desk[0] == "X" && desk[1] == "X" && desk[2] == "X")) return false;
-                if ((desk[3] == "X" && desk[4] == "X" && desk[5] == "X")) return false;
-                if ((desk[6] == "X" && desk[7] == "X" && desk[8] == "X")) return false;
+                if ((desk[0] == "X" && desk[1] == "X" && desk[2] == "X")) return 0;
+                if ((desk[3] == "X" && desk[4] == "X" && desk[5] == "X")) return 0;
+                if ((desk[6] == "X" && desk[7] == "X" && desk[8] == "X")) return 0;
 
 
-                if ((desk[0] == "X" && desk[3] == "X" && desk[6] == "X")) return false;
-                if ((desk[2] == "X" && desk[4] == "X" && desk[7] == "X")) return false;
-                if ((desk[2] == "X" && desk[5] == "X" && desk[8] == "X")) return false;
+                if ((desk[0] == "X" && desk[3] == "X" && desk[6] == "X")) return 0;
+                if ((desk[2] == "X" && desk[4] == "X" && desk[7] == "X")) return 0;
+                if ((desk[2] == "X" && desk[5] == "X" && desk[8] == "X")) return 0;
 
-                if ((desk[0] == "X" && desk[4] == "X" && desk[8] == "X")) return false;
-                if ((desk[6] == "X" && desk[4] == "X" && desk[2] == "X")) return false;
+                if ((desk[0] == "X" && desk[4] == "X" && desk[8] == "X")) return 0;
+                if ((desk[6] == "X" && desk[4] == "X" && desk[2] == "X")) return 0;
 
-                else return true;
+                else return 1;
 
             }
 
-            else
+            else if (symbol == "0")
             {
-                if ((desk[0] == "O" && desk[1] == "O" && desk[2] == "O")) return false;
-                if ((desk[3] == "O" && desk[4] == "O" && desk[5] == "O")) return false;
-                if ((desk[6] == "O" && desk[7] == "O" && desk[8] == "O")) return false;
+                if ((desk[0] == "0" && desk[1] == "0" && desk[2] == "0")) return 0;
+                if ((desk[3] == "0" && desk[4] == "0" && desk[5] == "0")) return 0;
+                if ((desk[6] == "0" && desk[7] == "0" && desk[8] == "0")) return 0;
 
 
-                if ((desk[0] == "O" && desk[3] == "O" && desk[6] == "O")) return false;
-                if ((desk[1] == "O" && desk[4] == "O" && desk[7] == "O")) return false;
-                if ((desk[2] == "O" && desk[5] == "O" && desk[8] == "O")) return false;
+                if ((desk[0] == "0" && desk[3] == "0" && desk[6] == "0")) return 0;
+                if ((desk[1] == "0" && desk[4] == "0" && desk[7] == "0")) return 0;
+                if ((desk[2] == "0" && desk[5] == "0" && desk[8] == "0")) return 0;
 
-                if ((desk[0] == "O" && desk[4] == "O" && desk[8] == "O")) return false;
-                if ((desk[6] == "O" && desk[4] == "O" && desk[2] == "O")) return false;
+                if ((desk[0] == "0" && desk[4] == "0" && desk[8] == "0")) return 0;
+                if ((desk[6] == "0" && desk[4] == "0" && desk[2] == "0")) return 0;
 
-                else return true;
+                else return 1;
             }
             
-
+            else
+            {
+                return 3;
+            }
         }
 
+        public void bot_Going(string znak)
+        {
+            List<Button> desk = new List<Button> { };
+            foreach (UIElement el in MainRoot.Children)
+            {
+                if (el is Button)
+                {
+                    if (((Button)el).Name != "bEnd")
+                    {
+                        desk.Add((Button)el);
+                    }
+
+                }
+            }
+            Random rnd = new Random();
+            Button bot = desk[rnd.Next(0, 8)];
+
+            while (bot.Content == "0" || bot.Content == "X")
+            {
+                bot = desk[rnd.Next(0, 8)];
+            }
+
+            bot.Content = znak;
+        }
     }
 }
