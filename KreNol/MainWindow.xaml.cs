@@ -80,45 +80,13 @@ namespace KreNol
             Debug.WriteLine("asd");
             if (isGoing)
             {
-                if (thisGame == 0)
+                if (((Button)e.OriginalSource).Content != "X" && ((Button)e.OriginalSource).Content != "0")
                 {
-                    ((Button)e.OriginalSource).Content = "X";
-                    isGoing = !isGoing;
-
-                    if (Is_Win("X") == 0)
+                    if (thisGame == 0)
                     {
-                        MessageBox.Show("Крестики победили");
-                    }
+                        ((Button)e.OriginalSource).Content = "X";
+                        isGoing = !isGoing;
 
-                    else if (Is_Win("X") == 1)
-                    {
-                        //В этом цикле бот ставит свой значёк на повторяющуюся клетку
-                        bot_Going("0");
-                        if (Is_Win("0") == 0)
-                        {
-                            MessageBox.Show("Нолики победили");
-                        }
-
-                        else if (Is_Win("0") == 1)
-                        {
-                            isGoing = true;
-                        }
-                    }
-                }
-                else if (thisGame == 1)
-                {
-                    ((Button)e.OriginalSource).Content = "0";
-                    isGoing = !isGoing;
-
-                    if (Is_Win("0") == 0)
-                    {
-                        MessageBox.Show("Нолики победили");
-                    }
-
-                    else if (Is_Win("0") == 1)
-                    {
-                        //В этом цикле бот ставит свой значёк на случайную пустую клетку
-                        bot_Going("X");
                         if (Is_Win("X") == 0)
                         {
                             MessageBox.Show("Крестики победили");
@@ -126,7 +94,42 @@ namespace KreNol
 
                         else if (Is_Win("X") == 1)
                         {
-                            isGoing = true;
+                            //В этом цикле бот ставит свой значёк на повторяющуюся клетку
+                            bot_Going("0");
+                            if (Is_Win("0") == 0)
+                            {
+                                MessageBox.Show("Нолики победили");
+                            }
+
+                            else if (Is_Win("0") == 1)
+                            {
+                                isGoing = true;
+                            }
+                        }
+                    }
+                    else if (thisGame == 1)
+                    {
+                        ((Button)e.OriginalSource).Content = "0";
+                        isGoing = !isGoing;
+
+                        if (Is_Win("0") == 0)
+                        {
+                            MessageBox.Show("Нолики победили");
+                        }
+
+                        else if (Is_Win("0") == 1)
+                        {
+                            //В этом цикле бот ставит свой значёк на случайную пустую клетку
+                            bot_Going("X");
+                            if (Is_Win("X") == 0)
+                            {
+                                MessageBox.Show("Крестики победили");
+                            }
+
+                            else if (Is_Win("X") == 1)
+                            {
+                                isGoing = true;
+                            }
                         }
                     }
                 }
@@ -159,7 +162,7 @@ namespace KreNol
 
 
                 if ((desk[0] == "X" && desk[3] == "X" && desk[6] == "X")) return 0;
-                if ((desk[2] == "X" && desk[4] == "X" && desk[7] == "X")) return 0;
+                if ((desk[1] == "X" && desk[4] == "X" && desk[7] == "X")) return 0;
                 if ((desk[2] == "X" && desk[5] == "X" && desk[8] == "X")) return 0;
 
                 if ((desk[0] == "X" && desk[4] == "X" && desk[8] == "X")) return 0;
@@ -207,14 +210,20 @@ namespace KreNol
                 }
             }
             Random rnd = new Random();
-            Button bot = desk[rnd.Next(0, 8)];
+            Button[] bot = desk.Where(x => x.Content == null || x.Content == "").ToArray();
 
-            while (bot.Content == "0" || bot.Content == "X")
+            if (bot.Count() != 0)
             {
-                bot = desk[rnd.Next(0, 8)];
+                Debug.WriteLine(bot.Count());
+                Button botBtn = bot[rnd.Next(0, bot.Count())];
+                botBtn.Content = znak;
             }
-
-            bot.Content = znak;
+            else if (bot.Count() == 0)
+            {
+                Button botBtn = desk[rnd.Next(0, 8)];
+                botBtn.Content = znak;
+            }
+            
         }
     }
 }
